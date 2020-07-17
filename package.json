@@ -1,0 +1,18 @@
+{
+  "name": "entropybot",
+  "version": "1.0.0",
+  "description": "Exactly what you'd expect.",
+  "main": "startup.js",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "discord.js": "^12.1.1",
+    "sequelize": "^5.21.11",
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Entropy",
+  "license": "ISC"
+}
