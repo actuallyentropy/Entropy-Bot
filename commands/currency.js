@@ -104,5 +104,63 @@ module.exports =
             await currencyHandler.setUserCurrency(giftedUser.id, giftedWealth + amount);
             message.channel.send(`Gave ${giftedUser} ${amount} ${currency}`);            
         }
+    },
+
+    plant:
+    {
+        name: 'plant',
+        aliases: [],
+        argc: 1,
+        usage: `${prefix}plant <amount>`,
+        description: `Makes an amount of ${currency} available for other users to pick up.`,
+
+        async execute(message, args)
+        {
+            const usr = message.author.id;
+            const amount = parseInt(args[0]);
+
+            if(isNaN(amount))
+            {
+                message.channel.send(`Correct usage: ${this.usage}`);
+                console.log(typeof(args[0]));
+                return;
+            }
+
+            if(amount < 1)
+            {
+                message.channel.send("Nice try.");
+                return;
+            }
+
+            let planterWealth = await currencyHandler.getUserCurrency(usr);
+            if(planterWealth < amount)
+            {
+                message.reply(`you only have ${planterWealth} ${currency}`);
+                return;
+            }
+            await currencyHandler.setUserCurrency(usr, planterWealth - amount);
+
+            const chnl = message.channel;
+            message.delete();
+            const plantMsg = await chnl.send(`${message.author} planted ${amount} ${currency}! type "pick" to pick it up!`);
+            const filter = response => {return response.content.toLowerCase() === 'pick'};
+            try
+            {
+                const claimer = await chnl.awaitMessages(filter, {max: 1, time: 3600000, errors: ['time']});
+                plantMsg.delete();
+                console.log(`pick claimed by ${claimer.first().author}`);
+                const claimerWealth = await currencyHandler.getUserCurrency(claimer.first().author.id);
+                await currencyHandler.setUserCurrency(claimer.first().author.id, claimerWealth + amount);
+                const claimedMsg = await chnl.send(`${claimer.first().author} claimed ${amount} ${currency}`);
+                //Cleanup
+                claimer.first().delete();
+                claimedMsg.delete({timeout: 3000}); 
+            }catch(e)
+            {
+                plantMsg.delete();
+                planterWealth = await currencyHandler.getUserCurrency(usr);
+                await currencyHandler.setUserCurrency(usr, planterWealth + amount);
+            }
+        }
     }
 }
