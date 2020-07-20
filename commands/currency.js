@@ -1,96 +1,8 @@
-const {currency, DBFile, prefix} = require('../config.json');
-const Sequelize = require('sequelize');
+const {currency, prefix} = require('../config.json');
 const MentionHandler = require('../mentionHandler.js');
-const mh = new MentionHandler();
-
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: DBFile, 
-    logging: false
-});
-
-const Banks = sequelize.define('banks', 
-{
-    user: 
-    {
-        type: Sequelize.TEXT,
-        unique: true
-    },
-
-    currency: 
-    {
-        type: Sequelize.INTEGER,
-        defaultValue: 0,
-        allowNull: false
-    }
-});
-
-Banks.sync();
-//Banks.sync({force: true}); //Force recreating the database each time
-
-/*
-Takes a userID value and retrieves the currency of that user in the database, or adds them with a default of 0 if they are not already present
-*/
-async function getUserCurrency(userID)
-{
-    //Retrieve a user's bank
-    console.log(`getting ${userID}'s bank`);
-    const bank = await Banks.findOne({where: {user: userID}});
-
-    if(bank)
-    {
-        return bank.currency;
-    }else
-    {
-        //Create a bank for a user if one doesn't exist
-        try
-        {
-            newBank = await Banks.create({
-                user: userID,
-                currency: 0
-            });
-            return 0;
-        }catch(e)
-        {
-            if (e.name === 'SequelizeUniqueConstraintError') 
-            {
-                console.log('Error while attempting to add new user: that tag already exists. This shouldn\'t occur.');
-                return -1;
-            }
-
-            console.log('Something went wrong when attempting to add a new user.');
-        }
-    }
-}
-
-//Sets a user's currency amount, or adds that user with the appropriate amount if they are not already in the database
-async function setUserCurrency(userID, value)
-{
-    console.log(`setting ${userID} wealth to ${value}`);
-    const affectedRows = await Banks.update({currency: value}, {where: {user: userID}});
-
-    if(affectedRows <= 0)
-    {
-        //Create a bank for a user if one doesn't exist
-        try
-        {
-            newBank = await Banks.create({
-                user: userID,
-                currency: value
-            });
-            return;
-        }catch(e)
-        {
-            if (e.name === 'SequelizeUniqueConstraintError') 
-            {
-                console.log('Error while attempting to add new user: that tag already exists. This shouldn\'t occur.');
-                return;
-            }
-
-            console.log('Something went wrong when attempting to add a new user.');
-        }
-    }
-}
+const mentionHandler = new MentionHandler();
+const CurrencyHandler = require('../currencyHandler.js');
+const currencyHandler = new CurrencyHandler();
 
 module.exports = 
 {
@@ -105,7 +17,7 @@ module.exports =
 
         async execute(message, args)
         {
-            const userWealth = await getUserCurrency(message.author.id);
+            const userWealth = await currencyHandler.getUserCurrency(message.author.id);
             message.reply(`you have ${userWealth} ${currency}`)
         }
     },
@@ -132,7 +44,7 @@ module.exports =
                 return;
             }
     
-            const giftedUser = mh.getUserFromMention(args[0], message.client);
+            const giftedUser = mentionHandler.getUserFromMention(args[0], message.client);
 
             if(!giftedUser || typeof giftedUser == 'undefined')
             {
@@ -140,8 +52,8 @@ module.exports =
                 return;
             }
 
-            const userWealth = await getUserCurrency(giftedUser.id);
-            await setUserCurrency(giftedUser.id, userWealth + amount);
+            const userWealth = await currencyHandler.getUserCurrency(giftedUser.id);
+            await currencyHandler.setUserCurrency(giftedUser.id, userWealth + amount);
             message.channel.send(`Awarded ${giftedUser} ${amount} ${currency}`);
         }
     },
@@ -172,7 +84,7 @@ module.exports =
                 return;
             }
 
-            const giftedUser = mh.getUserFromMention(args[0], message.client);
+            const giftedUser = mentionHandler.getUserFromMention(args[0], message.client);
 
             if(!giftedUser || typeof giftedUser == 'undefined')
             {
@@ -180,16 +92,16 @@ module.exports =
                 return;
             }
 
-            const gifterWealth = await getUserCurrency(usr);
+            const gifterWealth = await currencyHandler.getUserCurrency(usr);
             if(gifterWealth < amount)
             {
                 message.reply(`you only have ${gifterWealth} ${currency}`);
                 return;
             }
 
-            await setUserCurrency(usr, gifterWealth - amount);
-            const giftedWealth = await getUserCurrency(giftedUser.id);
-            await setUserCurrency(giftedUser.id, giftedWealth + amount);
+            await currencyHandler.setUserCurrency(usr, gifterWealth - amount);
+            const giftedWealth = await currencyHandler.getUserCurrency(giftedUser.id);
+            await currencyHandler.setUserCurrency(giftedUser.id, giftedWealth + amount);
             message.channel.send(`Gave ${giftedUser} ${amount} ${currency}`);            
         }
     }
