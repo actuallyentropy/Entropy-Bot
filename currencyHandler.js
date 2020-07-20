@@ -23,8 +23,8 @@ const Banks = sequelize.define('banks',
     }
 });
 
-//Banks.sync();
-Banks.sync({force: true}); //Force recreating the database each time
+Banks.sync();
+//Banks.sync({force: true}); //Force recreating the database each time
 
 module.exports = class CurrencyHandler
 {
