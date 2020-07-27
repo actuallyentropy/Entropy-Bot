@@ -1,7 +1,7 @@
 const {DBFile, prefix, strikeLimit} = require('../config.json');
 const Sequelize = require('sequelize');
 const MentionHandler = require('../mentionHandler.js');
-const mh = new MentionHandler();
+const mentionHandler = new MentionHandler();
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
@@ -84,7 +84,7 @@ module.exports =
             if(!usr.hasPermission('ADMINISTRATOR') && !usr.hasPermission('KICK_MEMBERS'))
                 return;
 
-            const struckUser = mh.getUserFromMention(args[0], message.client);
+            const struckUser = mentionHandler.getUserFromMention(args[0], message.client);
             if(!struckUser || typeof struckUser == 'undefined')
             {
                 message.channel.send(`no user found: ${args[0]}. Please note you must mention a user in your message by typing @ and selecting their name.`);
@@ -125,7 +125,7 @@ module.exports =
             if(!usr.hasPermission('ADMINISTRATOR') && !usr.hasPermission('KICK_MEMBERS'))
                 return;
             
-            const struckUser = mh.getUserFromMention(args[0], message.client);
+            const struckUser = mentionHandler.getUserFromMention(args[0], message.client);
             if(!struckUser || typeof struckUser == 'undefined')
             {
                 message.channel.send(`no user found: ${args[0]}. Please note you must mention a user in your message by typing @ and selecting their name.`);
@@ -164,7 +164,7 @@ module.exports =
             if(!usr.hasPermission('ADMINISTRATOR') && !usr.hasPermission('KICK_MEMBERS'))
                 return;
             
-            const struckUser = mh.getUserFromMention(args[0], message.client);
+            const struckUser = mentionHandler.getUserFromMention(args[0], message.client);
             if(!struckUser || typeof struckUser == 'undefined')
             {
                 message.channel.send(`no user found: ${args[0]}. Please note you must mention a user in your message by typing @ and selecting their name.`);

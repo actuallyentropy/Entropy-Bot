@@ -1,7 +1,7 @@
 module.exports = class MentionHandler
 {
     //Parse string into a mention object
-    getUserFromMention(mention, client) 
+    static getUserFromMention(mention, client) 
     {
         if (!mention) return;
     

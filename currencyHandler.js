@@ -31,7 +31,7 @@ module.exports = class CurrencyHandler
     /*
     Takes a userID value and retrieves the currency of that user in the database, or adds them with a default of 0 if they are not already present
     */
-    async getUserCurrency(userID)
+    static async getUserCurrency(userID)
     {
         //Retrieve a user's bank
         console.log(`getting ${userID}'s bank`);
@@ -65,7 +65,7 @@ module.exports = class CurrencyHandler
     }
 
     //Sets a user's currency amount, or adds that user with the appropriate amount if they are not already in the database
-    async setUserCurrency(userID, value)
+    static async setUserCurrency(userID, value)
     {
         console.log(`setting ${userID} wealth to ${value}`);
         const affectedRows = await Banks.update({currency: value}, {where: {user: userID}});

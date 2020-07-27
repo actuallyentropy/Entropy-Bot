@@ -1,0 +1,8 @@
+{
+    "prefix": "!",
+    "token": "your_bot_token",
+    "guild": "guild_id",
+    "DBFile": "./test.db",
+    "currency": "money",
+    "strikeLimit": 3
+}

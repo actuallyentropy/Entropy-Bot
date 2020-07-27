@@ -4,8 +4,8 @@
   "description": "Exactly what you'd expect.",
   "main": "startup.js",
   "dependencies": {
-    "bluebird": "^3.7.2",
     "discord.js": "^12.2.0",
+    "emoji-regex": "^9.0.0",
     "sequelize": "^5.22.3",
     "sqlite3": "^4.2.0"
   },

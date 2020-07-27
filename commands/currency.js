@@ -1,8 +1,6 @@
 const {currency, prefix} = require('../config.json');
 const MentionHandler = require('../mentionHandler.js');
-const mentionHandler = new MentionHandler();
 const CurrencyHandler = require('../currencyHandler.js');
-const currencyHandler = new CurrencyHandler();
 
 module.exports = 
 {
@@ -10,14 +8,14 @@ module.exports =
     amount: 
     {
         name: 'amount',
-        aliases: ['$', 'muns'],
+        aliases: ['$', 'muns', 'money', 'cash'],
         argc: 0,
         usage: `${prefix}amount`,
         description: `Gets how many ${currency} you have.`,
 
         async execute(message, args)
         {
-            const userWealth = await currencyHandler.getUserCurrency(message.author.id);
+            const userWealth = await CurrencyHandler.getUserCurrency(message.author.id);
             message.reply(`you have ${userWealth} ${currency}`)
         }
     },
@@ -44,7 +42,7 @@ module.exports =
                 return;
             }
     
-            const giftedUser = mentionHandler.getUserFromMention(args[0], message.client);
+            const giftedUser = MentionHandler.getUserFromMention(args[0], message.client);
 
             if(!giftedUser || typeof giftedUser == 'undefined')
             {
@@ -52,8 +50,8 @@ module.exports =
                 return;
             }
 
-            const userWealth = await currencyHandler.getUserCurrency(giftedUser.id);
-            await currencyHandler.setUserCurrency(giftedUser.id, userWealth + amount);
+            const userWealth = await CurrencyHandler.getUserCurrency(giftedUser.id);
+            await CurrencyHandler.setUserCurrency(giftedUser.id, userWealth + amount);
             message.channel.send(`Awarded ${giftedUser} ${amount} ${currency}`);
         }
     },
@@ -84,7 +82,7 @@ module.exports =
                 return;
             }
 
-            const giftedUser = mentionHandler.getUserFromMention(args[0], message.client);
+            const giftedUser = MentionHandler.getUserFromMention(args[0], message.client);
 
             if(!giftedUser || typeof giftedUser == 'undefined')
             {
@@ -92,16 +90,16 @@ module.exports =
                 return;
             }
 
-            const gifterWealth = await currencyHandler.getUserCurrency(usr);
+            const gifterWealth = await CurrencyHandler.getUserCurrency(usr);
             if(gifterWealth < amount)
             {
                 message.reply(`you only have ${gifterWealth} ${currency}`);
                 return;
             }
 
-            await currencyHandler.setUserCurrency(usr, gifterWealth - amount);
-            const giftedWealth = await currencyHandler.getUserCurrency(giftedUser.id);
-            await currencyHandler.setUserCurrency(giftedUser.id, giftedWealth + amount);
+            await CurrencyHandler.setUserCurrency(usr, gifterWealth - amount);
+            const giftedWealth = await CurrencyHandler.getUserCurrency(giftedUser.id);
+            await CurrencyHandler.setUserCurrency(giftedUser.id, giftedWealth + amount);
             message.channel.send(`Gave ${giftedUser} ${amount} ${currency}`);            
         }
     },
@@ -132,13 +130,13 @@ module.exports =
                 return;
             }
 
-            let planterWealth = await currencyHandler.getUserCurrency(usr);
+            let planterWealth = await CurrencyHandler.getUserCurrency(usr);
             if(planterWealth < amount)
             {
                 message.reply(`you only have ${planterWealth} ${currency}`);
                 return;
             }
-            await currencyHandler.setUserCurrency(usr, planterWealth - amount);
+            await CurrencyHandler.setUserCurrency(usr, planterWealth - amount);
 
             const chnl = message.channel;
             message.delete();
@@ -149,8 +147,8 @@ module.exports =
                 const claimer = await chnl.awaitMessages(filter, {max: 1, time: 3600000, errors: ['time']});
                 plantMsg.delete();
                 console.log(`pick claimed by ${claimer.first().author}`);
-                const claimerWealth = await currencyHandler.getUserCurrency(claimer.first().author.id);
-                await currencyHandler.setUserCurrency(claimer.first().author.id, claimerWealth + amount);
+                const claimerWealth = await CurrencyHandler.getUserCurrency(claimer.first().author.id);
+                await CurrencyHandler.setUserCurrency(claimer.first().author.id, claimerWealth + amount);
                 const claimedMsg = await chnl.send(`${claimer.first().author} claimed ${amount} ${currency}`);
                 //Cleanup
                 claimer.first().delete();
@@ -158,8 +156,8 @@ module.exports =
             }catch(e)
             {
                 plantMsg.delete();
-                planterWealth = await currencyHandler.getUserCurrency(usr);
-                await currencyHandler.setUserCurrency(usr, planterWealth + amount);
+                planterWealth = await CurrencyHandler.getUserCurrency(usr);
+                await CurrencyHandler.setUserCurrency(usr, planterWealth + amount);
             }
         }
     }
