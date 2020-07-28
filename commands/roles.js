@@ -38,6 +38,7 @@ module.exports =
 
         async execute(message, args)
         {
+            await message.delete();
             const usr = message.channel.guild.member(message.author);
             if(!usr.hasPermission('ADMINISTRATOR') && !usr.hasPermission('KICK_MEMBERS'))
                 return;
@@ -83,6 +84,7 @@ module.exports =
                     await menuMsg.edit(`${menuMsg.content}\n${args[1]} ${args[3]}`);
                 }
                 
+                menuMsg.react(args[1]);
                 return;
             }
 
@@ -130,6 +132,8 @@ module.exports =
             {
                 await menuMsg.edit(`${menuMsg.content}\n${args[1]} ${args[3]}`);
             }
+
+            menuMsg.react(emojiValidate);
         }
     }
 }

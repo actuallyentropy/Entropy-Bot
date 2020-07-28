@@ -24,8 +24,8 @@ const MsgReacts = sequelize.define('msgreacts',
     }
 })
 
-//MsgReacts.sync();
-MsgReacts.sync({force: true}); //force recreating the database each time
+MsgReacts.sync();
+//MsgReacts.sync({force: true}); //force recreating the database each time
 
 module.exports = class ReactionHandler
 {

@@ -25,6 +25,9 @@ client.on('message', message =>
 //Get messages for reactions and hand them off to the reaction handler
 client.on('messageReactionAdd', async (reaction, user) => 
 {
+    if(user.bot || reaction.message.guild != guild)
+        return;
+
     console.log(`caught reaction: ${reaction.emoji.name} ${reaction.emoji.id}`);
     if(reaction.partial)
     {

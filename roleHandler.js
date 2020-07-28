@@ -53,10 +53,10 @@ const RoleStore = sequelize.define('roleStore',
     }
 });
 
-//RoleStore.sync();
-RoleStore.sync({force: true}); //force recreating the database each time
-//RoleReacts.sync();
-RoleReacts.sync({force: true});
+RoleStore.sync();
+//RoleStore.sync({force: true}); //force recreating the database each time
+RoleReacts.sync();
+//RoleReacts.sync({force: true});
 
 module.exports = class RoleHandler
 {
