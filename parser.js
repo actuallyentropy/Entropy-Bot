@@ -21,7 +21,7 @@ module.exports = class Parser
         const args = []; //message.content.slice(prefix.length).match(/\S+|"(?:\\"|[^"])+"/g);
         let inQuotes = false;
         var arg = "";
-        //regexs have failed me
+        
         //Get spaced arguments, or whole statements in quotation marks as a single argument
         for(let i = prefix.length; i < message.content.length; i++)
         {
