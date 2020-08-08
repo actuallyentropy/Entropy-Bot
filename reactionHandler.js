@@ -47,6 +47,24 @@ module.exports = class ReactionHandler
         }
     }
 
+    static async processUnreaction(reaction, user)
+    {
+        const msg = await MsgReacts.findOne({where: {message: reaction.message.id}});
+        const member = await reaction.message.guild.members.fetch(user);
+
+        if(msg)
+        {
+            switch(msg.reactType)
+            {
+                case "role":
+                    RoleHandler.unroleFromReact(reaction.message, reaction.emoji.name, member);
+                    return;
+                default:
+                    return;
+            }
+        }
+    }
+
     static async newReactionTrigger(message, type)
     {
         try

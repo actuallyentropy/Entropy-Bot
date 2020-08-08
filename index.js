@@ -29,6 +29,7 @@ client.on('messageReactionAdd', async (reaction, user) =>
         return;
 
     console.log(`caught reaction: ${reaction.emoji.name} ${reaction.emoji.id}`);
+
     if(reaction.partial)
     {
         try
@@ -42,4 +43,26 @@ client.on('messageReactionAdd', async (reaction, user) =>
     }
 
     ReactionHandler.processReaction(reaction, user);
+});
+
+client.on('messageReactionRemove', async (reaction, user) => 
+{
+    if(user.bot || reaction.message.guild != guild)
+        return;
+
+    console.log(`caught unreaction: ${reaction.emoji.name} ${reaction.emoji.id}`);
+
+    if(reaction.partial)
+    {
+        try
+        {
+            await reaction.fetch();
+        }catch(e)
+        {
+            console.log(`failed to fetch message from reacthion: ${e}`);
+            return;
+        }
+    }
+
+    ReactionHandler.processUnreaction(reaction, user);
 });

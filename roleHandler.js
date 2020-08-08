@@ -100,7 +100,7 @@ module.exports = class RoleHandler
 
         if(roleLookup)
         {
-            console.log(`granting ${member.name} ${roleLookup.role}`);
+            console.log(`granting ${member} ${roleLookup.role}`);
             const role = message.guild.roles.cache.find(role => role.name === roleLookup.role);
 
             if(!role)
@@ -113,6 +113,26 @@ module.exports = class RoleHandler
         }else
         {
             console.log(`Request made for a react that isn't available: ${react}`);
+        }
+    }
+
+    static async unroleFromReact(message, react, member)
+    {
+        console.log(`Looking up role for ${message.id} with react ${react}`);
+        const roleLookup = await RoleReacts.findOne({where: {message: message.id, react: react}});
+
+        if(roleLookup)
+        {
+            console.log(`removing role ${roleLookup.role} from ${member}`);
+            const role = message.guild.roles.cache.find(role => role.name === roleLookup.role);
+
+            if(!role)
+            {
+                console.log(`Role does not exist: ${roleLookup.role}`);
+                return;
+            }
+
+            member.roles.remove(role);
         }
     }
 
