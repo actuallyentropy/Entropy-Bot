@@ -4,9 +4,9 @@
   "description": "Exactly what you'd expect.",
   "main": "startup.js",
   "dependencies": {
-    "discord.js": "^12.2.0",
-    "emoji-regex": "^9.0.0",
-    "sequelize": "^5.22.3",
+    "discord.js": "^12.5.1",
+    "emoji-regex": "^9.2.2",
+    "sequelize": "^5.22.4",
     "sqlite3": "^4.2.0"
   },
   "devDependencies": {},
