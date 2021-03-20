@@ -62,7 +62,7 @@ module.exports =
                     res += modes[i] + ", ";
                 }
 
-                res.slice(0, -2);
+                res = res.slice(0, -2);
                 message.channel.send(res);
                 return;
             }
